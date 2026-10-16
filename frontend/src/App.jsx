@@ -1,3 +1,5 @@
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import Projects from "./Projects";
 
 import {
   LayoutDashboard,
@@ -73,7 +75,9 @@ const activities = [
   },
 ];
 
-function App() {
+  function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
   return (
     <div className="min-h-screen bg-[#0b0c10] text-white">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col border-r border-white/[0.07] bg-[#101116] lg:flex">
@@ -94,29 +98,36 @@ function App() {
             WORKSPACE
           </p>
 
-          {[
-            [LayoutDashboard, "Overview", true],
-            [FolderKanban, "Projects", false],
-            [Users, "Clients", false],
-            [CalendarDays, "Shoot planner", false],
-            [CheckSquare, "Tasks", false],
-            [MessageSquare, "Messages", false],
-          ].map(([Icon, label, active]) => (
-            <button
-              key={label}
-              className={`mb-1 flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${
-                active
-                  ? "bg-violet-600/15 font-medium text-violet-300"
-                  : "text-gray-400 hover:bg-white/[0.04] hover:text-white"
-              }`}
-            >
-              <Icon size={18} />
-              {label}
-              {label === "Messages" && (
-                <span className="ml-auto h-2 w-2 rounded-full bg-violet-400" />
-              )}
-            </button>
-          ))}
+
+{[
+  [LayoutDashboard, "Overview", "/"],
+  [FolderKanban, "Projects", "/projects"],
+  [Users, "Clients", "/clients"],
+  [CalendarDays, "Shoot planner", "/shoot-planner"],
+  [CheckSquare, "Tasks", "/tasks"],
+  [MessageSquare, "Messages", "/messages"],
+].map(([Icon, label, path]) => {
+  const active = location.pathname === path;
+
+  return (
+    <button
+      key={label}
+      onClick={() => navigate(path)}
+      className={`mb-1 flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${
+        active
+          ? "bg-violet-600/15 font-medium text-violet-300"
+          : "text-gray-400 hover:bg-white/[0.04] hover:text-white"
+      }`}
+    >
+      <Icon size={18} />
+      {label}
+      {label === "Messages" && (
+        <span className="ml-auto h-2 w-2 rounded-full bg-violet-400" />
+      )}
+    </button>
+  );
+})}
+
         </div>
 
         <div className="mt-auto space-y-1 border-t border-white/[0.07] p-4">
@@ -154,14 +165,19 @@ function App() {
               <Bell size={18} />
               <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-violet-400" />
             </button>
-            <button className="flex items-center gap-2 rounded-xl bg-violet-600 px-3 py-2.5 text-sm font-medium transition hover:bg-violet-500">
+            <button 
+            onClick={() => navigate("/projects")}
+            className="flex items-center gap-2 rounded-xl bg-violet-600 px-3 py-2.5 text-sm font-medium transition hover:bg-violet-500">
               <Plus size={17} />
               <span className="hidden sm:inline">New project</span>
             </button>
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1500px] space-y-8 p-5 sm:p-8">
+       {location.pathname === "/projects" ? (
+  <Projects />
+) : (
+  <div className="mx-auto max-w-[1500px] space-y-8 p-5 sm:p-8">
           <section className="relative overflow-hidden rounded-2xl border border-violet-400/15 bg-gradient-to-r from-[#20153c] via-[#19152b] to-[#13131c] p-6 sm:p-8">
             <div className="pointer-events-none absolute -right-10 -top-24 h-64 w-64 rounded-full bg-violet-600/20 blur-3xl" />
             <div className="relative max-w-xl">
@@ -175,9 +191,11 @@ function App() {
                 Keep your projects moving, your team aligned and your clients
                 delighted. Here's what's happening across your workspace.
               </p>
-              <button className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-900 transition hover:bg-gray-200">
-                Explore workspace <ArrowUpRight size={16} />
+              <button>  onClick={() => navigate("/projects")}
+              className="flex items-center gap-2 ..."
               </button>
+
+              
             </div>
           </section>
 
@@ -387,8 +405,9 @@ function App() {
             <p>Plan better. Create better. Deliver better.</p>
           </footer>
         </div>
-      </main>
-    </div>
+)}
+</main>
+</div>
   );
 }
 
